@@ -182,12 +182,18 @@ flowchart TB
         F1["功能页面"] ~~~ F2["图表可视化"] ~~~ F3["实时推送"]
     end
 
+    subgraph EXT["二次开发与扩展 · 贯穿各层的插槽"]
+        direction LR
+        X1["自定义策略"] ~~~ X2["自定义信号"] ~~~ X3["扩展分析页面"] ~~~ X4["AI 接口"]
+    end
+
     DATA --- ROUTE
     ROUTE --- STORE
     STORE --- CALC
     CALC --- RES
     RES --- SVC
     SVC --- FE
+    FE ~~~ EXT
 
     classDef fe fill:#eef2ff,stroke:#6366f1,color:#312e81
     classDef svc fill:#ecfeff,stroke:#06b6d4,color:#164e63
@@ -197,6 +203,7 @@ flowchart TB
     classDef data fill:#fdf2f8,stroke:#ec4899,color:#831843
     classDef pluginSlot fill:#fdf2f8,stroke:#ec4899,color:#831843,stroke-dasharray:5 4
     classDef route fill:#faf5ff,stroke:#8b5cf6,color:#6b21a8,stroke-width:2px
+    classDef ext fill:#f8fafc,stroke:#94a3b8,color:#334155,stroke-dasharray:5 4
 
     class F1,F2,F3 fe
     class S1,S2,S3,S4 svc
@@ -206,6 +213,7 @@ flowchart TB
     class D1,D2,D3,D4 data
     class D5 pluginSlot
     class R route
+    class X1,X2,X3,X4 ext
 
     style FE fill:#f5f3ff,stroke:#c7d2fe,color:#3730a3
     style SVC fill:#ecfeff,stroke:#a5f3fc,color:#155e75
@@ -214,6 +222,7 @@ flowchart TB
     style STORE fill:#ecfdf5,stroke:#a7f3d0,color:#065f46
     style ROUTE fill:#faf5ff,stroke:#ddd6fe,color:#6b21a8
     style DATA fill:#fdf2f8,stroke:#fbcfe8,color:#9d174d
+    style EXT fill:#f8fafc,stroke:#94a3b8,color:#334155,stroke-dasharray:7 5
 ```
 
 ### 关键机制
