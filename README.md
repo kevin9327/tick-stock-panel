@@ -147,50 +147,84 @@
 
 ```mermaid
 flowchart TB
-    subgraph FE["🖥️ 前端 React 18 SPA"]
-        FE1["Tanstack Query 数据层"] --- FE2["Lightweight Charts / ECharts"]
-        FE3["15+ 功能页面 · SSE 实时流"]
+    subgraph FE["前端 · React 18 SPA"]
+        direction LR
+        FE1["15+ 功能页面<br/>Tanstack Query"]
+        FE2["Lightweight Charts<br/>ECharts"]
+        FE3["SSE 实时流"]
+        FE1 ~~~ FE2 ~~~ FE3
     end
 
-    subgraph SVC["⚙️ 服务层 FastAPI"]
-        API["REST API + SSE 流式任务"]
-        MON["监控引擎 · 四类规则 + 推送"]
-        SCH["APScheduler · 盘后管道 / 定时复盘 / 分钟增量"]
-        ORACLE["交易日探针 · 节假日零请求门控"]
+    subgraph SVC["服务层 · FastAPI"]
+        direction LR
+        SVC1["REST + SSE<br/>流式任务"]
+        SVC2["监控引擎<br/>四类规则 · 推送"]
+        SVC3["APScheduler<br/>盘后管道 · 分钟增量"]
+        SVC4["交易日探针<br/>节假日零请求"]
+        SVC1 ~~~ SVC2 ~~~ SVC3 ~~~ SVC4
     end
 
-    subgraph RES["🧪 研究与执行层"]
-        BT["回测引擎 · T+1/费用/滑点仓位模拟<br/>分钟逐日回放 · worker 子进程隔离"]
-        MINE["因子挖掘 · 嵌套样本外 walk-forward"]
-        FACTOR["因子引擎 · 62+ 因子<br/>Rank IC / 分年 IR / PIT 财务快照"]
+    subgraph RES["研究层 · 回测与挖掘"]
+        direction LR
+        RES1["因子引擎<br/>62+ 因子 · Rank IC · PIT"]
+        RES2["回测引擎<br/>T+1 · 费用 · 分钟回放<br/>worker 子进程隔离"]
+        RES3["因子挖掘<br/>嵌套样本外"]
+        RES1 ~~~ RES2 ~~~ RES3
     end
 
-    subgraph CALC["📊 计算层 Polars"]
-        PIPE["指标流水线 · 现算 68 列指标/信号<br/>复权 / 涨停信号 / 偏离值"]
+    subgraph CALC["计算层 · Polars"]
+        direction LR
+        CALC1["指标流水线<br/>68 列指标/信号现算"]
+        CALC2["复权 · 涨停信号<br/>偏离值"]
+        CALC1 ~~~ CALC2
     end
 
-    subgraph STORE["🗄️ 存储层"]
-        P1[("Parquet 分区表<br/>kline_daily / enriched / minute / financials")]
-        P2[("DuckDB 查询加速")]
-        P3[("JSON 按日缓存<br/>龙虎榜 / 盘前风向标")]
+    subgraph STORE["存储层"]
+        direction LR
+        ST1[("Parquet 分区表<br/>daily / enriched<br/>minute / financials")]
+        ST2[("DuckDB<br/>查询加速")]
+        ST3[("JSON 按日缓存<br/>龙虎榜 · 风向标")]
+        ST1 ~~~ ST2 ~~~ ST3
     end
 
-    subgraph SRC["🔌 数据源层(插件化)"]
-        TF["TickFlow SDK"]
-        FY["fuyao · 同花顺官方 REST<br/>行情/财务/龙虎榜/风向标/交易日历"]
-        SDK["stock-sdk 参考插件"]
-        YAML["YAML 自定义 HTTP 源"]
+    subgraph DATA["数据源层 · 插件化 + 能力路由"]
+        direction LR
+        D1["TickFlow SDK"] --> R
+        D2["fuyao<br/>同花顺 REST"] --> R
+        D3["stock-sdk<br/>参考插件"] --> R
+        D4["YAML<br/>自定义 HTTP 源"] --> R
+        R(["能力路由矩阵<br/>五数据集独立路由<br/>+ 档位探测"])
+        D1 ~~~ D2 ~~~ D3 ~~~ D4
     end
 
-    ROUTE["🔀 能力路由矩阵<br/>daily / adj_factor / realtime / minute / financial<br/>五数据集按源能力独立路由 + 档位探测"]
+    FE --> SVC
+    SVC --> RES
+    RES --> CALC
+    CALC --> STORE
+    STORE --> DATA
 
-    FE --> API
-    SRC --> ROUTE --> PIPE --> STORE
-    STORE --> FACTOR --> BT
-    STORE --> MINE
-    API --> MON
-    SCH --> ORACLE
-    SVC --> CALC
+    classDef fe fill:#eef2ff,stroke:#6366f1,color:#312e81
+    classDef svc fill:#ecfeff,stroke:#06b6d4,color:#164e63
+    classDef res fill:#fff7ed,stroke:#f97316,color:#7c2d12
+    classDef calc fill:#f0f9ff,stroke:#0ea5e9,color:#0c4a6e
+    classDef store fill:#ecfdf5,stroke:#10b981,color:#064e3b
+    classDef data fill:#fdf2f8,stroke:#ec4899,color:#831843
+    classDef route fill:#fdf2f8,stroke:#db2777,color:#831843,stroke-width:2px
+
+    class FE1,FE2,FE3 fe
+    class SVC1,SVC2,SVC3,SVC4 svc
+    class RES1,RES2,RES3 res
+    class CALC1,CALC2 calc
+    class ST1,ST2,ST3 store
+    class D1,D2,D3,D4 data
+    class R route
+
+    style FE fill:#f5f3ff,stroke:#c7d2fe,color:#3730a3
+    style SVC fill:#ecfeff,stroke:#a5f3fc,color:#155e75
+    style RES fill:#fff7ed,stroke:#fed7aa,color:#9a3412
+    style CALC fill:#f0f9ff,stroke:#bae6fd,color:#075985
+    style STORE fill:#ecfdf5,stroke:#a7f3d0,color:#065f46
+    style DATA fill:#fdf2f8,stroke:#fbcfe8,color:#9d174d
 ```
 
 ### 关键机制
