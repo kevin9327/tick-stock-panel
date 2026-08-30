@@ -146,13 +146,13 @@
 ### 分层总览
 
 ```mermaid
-flowchart BT
+flowchart TB
     subgraph DATA["数据源层 · 插件化"]
         direction LR
-        D1["TickFlow"] --> R(["能力路由<br/>多数据集 · 按能力独立路由"])
-        D2["fuyao"] --> R
-        D3["stock-sdk"] --> R
-        D4["自定义源"] --> R
+        D1["TickFlow"] --- R(["能力路由<br/>多数据集 · 按能力独立路由"])
+        D2["fuyao"] --- R
+        D3["stock-sdk"] --- R
+        D4["自定义源"] --- R
         D1 ~~~ D2 ~~~ D3 ~~~ D4
     end
 
@@ -184,11 +184,11 @@ flowchart BT
         F1["功能页面"] ~~~ F2["图表可视化"] ~~~ F3["实时推送"]
     end
 
-    DATA --> STORE
-    STORE --> CALC
-    CALC --> RES
-    RES --> SVC
-    SVC --> FE
+    DATA --- STORE
+    STORE --- CALC
+    CALC --- RES
+    RES --- SVC
+    SVC --- FE
 
     classDef fe fill:#eef2ff,stroke:#6366f1,color:#312e81
     classDef svc fill:#ecfeff,stroke:#06b6d4,color:#164e63
