@@ -3,7 +3,7 @@
 
 # TSP--A股智能量化工作台
 
-[![声明:个人开源为主](https://img.shields.io/badge/%E2%9A%A0%EF%B8%8F_%E5%A3%B0%E6%98%8E-%E4%B8%AA%E4%BA%BA%E5%BC%80%E6%BA%90%E4%B8%BA%E4%B8%BB-green?style=for-the-badge&labelColor=red)](https://github.com/shy3130/tick-stock-panel)
+[![个人开源为主](https://img.shields.io/badge/%E4%B8%AA%E4%BA%BA%E5%BC%80%E6%BA%90%E4%B8%BA%E4%B8%BB-e11d48?style=for-the-badge)](https://github.com/shy3130/tick-stock-panel)
 
 **自托管、零运维的 A 股「选股 + 监控 + 回测」量化工作台**
 
