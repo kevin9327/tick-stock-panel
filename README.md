@@ -149,7 +149,7 @@
 flowchart TB
     subgraph DATA["数据源层 · 插件化"]
         direction LR
-        D1["TickFlow SDK"] ~~~ D2["fuyao"] ~~~ D3["stock-sdk"] ~~~ D4["YAML 自定义源"] ~~~ D5["+ 更多插件…"]
+        D1["TickFlow SDK"] ~~~ D2["fuyao<br/>同花顺 REST"] ~~~ D3["stock-sdk"] ~~~ D4["YAML 自定义源"] ~~~ D5["+ 更多插件…"]
     end
 
     subgraph ROUTE["能力路由层"]
