@@ -152,9 +152,9 @@ flowchart TB
         D1["TickFlow SDK"] ~~~ D2["fuyao"] ~~~ D3["stock-sdk"] ~~~ D4["YAML 自定义源"] ~~~ D5["+ 更多插件…"]
     end
 
-    subgraph ROUTE["能力路由矩阵 · 每数据集独立选源"]
+    subgraph ROUTE["能力路由层"]
         direction LR
-        DS1["日K"] ~~~ DS2["除权因子"] ~~~ DS3["实时行情"] ~~~ DS4["分钟K"] ~~~ DS5["五档盘口"] ~~~ DS6["财务"]
+        R(["多数据集 · 按能力独立路由 · 档位探测"])
     end
 
     subgraph STORE["存储层"]
@@ -196,7 +196,7 @@ flowchart TB
     classDef store fill:#ecfdf5,stroke:#10b981,color:#064e3b
     classDef data fill:#fdf2f8,stroke:#ec4899,color:#831843
     classDef pluginSlot fill:#fdf2f8,stroke:#ec4899,color:#831843,stroke-dasharray:5 4
-    classDef dataset fill:#f5f3ff,stroke:#a78bfa,color:#5b21b6
+    classDef route fill:#faf5ff,stroke:#8b5cf6,color:#6b21a8,stroke-width:2px
 
     class F1,F2,F3 fe
     class S1,S2,S3,S4 svc
@@ -205,7 +205,7 @@ flowchart TB
     class ST1,ST2,ST3 store
     class D1,D2,D3,D4 data
     class D5 pluginSlot
-    class DS1,DS2,DS3,DS4,DS5,DS6 dataset
+    class R route
 
     style FE fill:#f5f3ff,stroke:#c7d2fe,color:#3730a3
     style SVC fill:#ecfeff,stroke:#a5f3fc,color:#155e75
