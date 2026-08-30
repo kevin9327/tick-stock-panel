@@ -42,7 +42,7 @@
 
 | 模块             | 一句话                                                                 | 详见                              |
 | :--------------- | :--------------------------------------------------------------------- | :-------------------------------- |
-| 🔀 **能力路由**   | 五大数据集(daily/adj/realtime/minute/financial)按源能力独立路由,任选组合 | [custom-data-source.md](./docs/custom-data-source.md) |
+| 🔀 **能力路由**   | 多数据集(日K/除权/实时/分钟/盘口/财务,持续扩展)按源能力独立路由,任选组合 | [custom-data-source.md](./docs/custom-data-source.md) |
 | 🔍 **选股引擎**   | 18 个内置策略 + 分钟策略 + 自定义信号 + AI 生成,Polars 毫秒级扫全 A 股 | [strategy.md](./docs/strategy.md) |
 | 📊 **指标流水线** | MA/EMA/MACD/RSI/KDJ/布林/量比等 68 列指标与信号,一次扫表落盘 enriched Parquet    | [features.md](./docs/features.md) |
 | 🧪 **回测研究**   | 因子/策略/分钟回测 + 财务快照因子(点时口径),T+1/费用/滑点约束,结果可导出 | [features.md](./docs/features.md) |
@@ -146,62 +146,49 @@
 ### 分层总览
 
 ```mermaid
-flowchart TB
-    subgraph FE["前端 · React 18 SPA"]
+flowchart BT
+    subgraph DATA["数据源层 · 插件化"]
         direction LR
-        FE1["15+ 功能页面<br/>Tanstack Query"]
-        FE2["Lightweight Charts<br/>ECharts"]
-        FE3["SSE 实时流"]
-        FE1 ~~~ FE2 ~~~ FE3
-    end
-
-    subgraph SVC["服务层 · FastAPI"]
-        direction LR
-        SVC1["REST + SSE<br/>流式任务"]
-        SVC2["监控引擎<br/>四类规则 · 推送"]
-        SVC3["APScheduler<br/>盘后管道 · 分钟增量"]
-        SVC4["交易日探针<br/>节假日零请求"]
-        SVC1 ~~~ SVC2 ~~~ SVC3 ~~~ SVC4
-    end
-
-    subgraph RES["研究层 · 回测与挖掘"]
-        direction LR
-        RES1["因子引擎<br/>62+ 因子 · Rank IC · PIT"]
-        RES2["回测引擎<br/>T+1 · 费用 · 分钟回放<br/>worker 子进程隔离"]
-        RES3["因子挖掘<br/>嵌套样本外"]
-        RES1 ~~~ RES2 ~~~ RES3
-    end
-
-    subgraph CALC["计算层 · Polars"]
-        direction LR
-        CALC1["指标流水线<br/>68 列指标/信号现算"]
-        CALC2["复权 · 涨停信号<br/>偏离值"]
-        CALC1 ~~~ CALC2
+        D1["TickFlow"] --> R(["能力路由<br/>多数据集 · 按能力独立路由"])
+        D2["fuyao"] --> R
+        D3["stock-sdk"] --> R
+        D4["自定义源"] --> R
+        D1 ~~~ D2 ~~~ D3 ~~~ D4
     end
 
     subgraph STORE["存储层"]
         direction LR
-        ST1[("Parquet 分区表<br/>daily / enriched<br/>minute / financials")]
-        ST2[("DuckDB<br/>查询加速")]
-        ST3[("JSON 按日缓存<br/>龙虎榜 · 风向标")]
+        ST1[("Parquet 分区表")]
+        ST2[("DuckDB")]
+        ST3[("JSON 按日缓存")]
         ST1 ~~~ ST2 ~~~ ST3
     end
 
-    subgraph DATA["数据源层 · 插件化 + 能力路由"]
+    subgraph CALC["计算层 · Polars"]
         direction LR
-        D1["TickFlow SDK"] --> R
-        D2["fuyao<br/>同花顺 REST"] --> R
-        D3["stock-sdk<br/>参考插件"] --> R
-        D4["YAML<br/>自定义 HTTP 源"] --> R
-        R(["能力路由矩阵<br/>五数据集独立路由<br/>+ 档位探测"])
-        D1 ~~~ D2 ~~~ D3 ~~~ D4
+        C1["指标流水线"] ~~~ C2["复权与信号"]
     end
 
-    FE --> SVC
-    SVC --> RES
-    RES --> CALC
-    CALC --> STORE
-    STORE --> DATA
+    subgraph RES["研究层"]
+        direction LR
+        G1["因子引擎"] ~~~ G2["回测引擎"] ~~~ G3["因子挖掘"]
+    end
+
+    subgraph SVC["应用层 · FastAPI"]
+        direction LR
+        S1["REST · SSE"] ~~~ S2["监控引擎"] ~~~ S3["任务调度"] ~~~ S4["交易日探针"]
+    end
+
+    subgraph FE["呈现层 · React 18"]
+        direction LR
+        F1["功能页面"] ~~~ F2["图表可视化"] ~~~ F3["实时推送"]
+    end
+
+    DATA --> STORE
+    STORE --> CALC
+    CALC --> RES
+    RES --> SVC
+    SVC --> FE
 
     classDef fe fill:#eef2ff,stroke:#6366f1,color:#312e81
     classDef svc fill:#ecfeff,stroke:#06b6d4,color:#164e63
@@ -211,10 +198,10 @@ flowchart TB
     classDef data fill:#fdf2f8,stroke:#ec4899,color:#831843
     classDef route fill:#fdf2f8,stroke:#db2777,color:#831843,stroke-width:2px
 
-    class FE1,FE2,FE3 fe
-    class SVC1,SVC2,SVC3,SVC4 svc
-    class RES1,RES2,RES3 res
-    class CALC1,CALC2 calc
+    class F1,F2,F3 fe
+    class S1,S2,S3,S4 svc
+    class G1,G2,G3 res
+    class C1,C2 calc
     class ST1,ST2,ST3 store
     class D1,D2,D3,D4 data
     class R route
@@ -231,7 +218,7 @@ flowchart TB
 
 | 机制 | 说明 |
 | :--- | :--- |
-| **能力路由矩阵** | 五大数据集按源声明能力独立路由:TICKFLOW 档位探测(None/Free/Starter/Pro/Expert)+ 插件源能力声明,fail-closed(声明 `pct_unit` 未声明即拒)。同一数据集可随时换源,指标与回测口径不变 |
+| **能力路由矩阵** | 各数据集按源声明能力独立路由,注册表集中定义、可扩展:TICKFLOW 档位探测(None/Free/Starter/Pro/Expert)+ 插件源能力声明,fail-closed(声明 `pct_unit` 未声明即拒)。同一数据集可随时换源,指标与回测口径不变 |
 | **交易日探针** | fuyao 交易日历(确定性,含调休)→ tickflow 全市场行情时间戳探针(OR 语义)→ 工作日兜底;节假日自动停掉实时轮询与分钟增量,零无效请求 |
 | **财务多源合并** | 按 `(symbol, period_end)` 报告期累积,多源取并集、逐列按公告日取最新(PIT);公告前一律空值,绝不填 0 |
 | **非路由数据集直连** | 龙虎榜/盘前风向标/交易日历等 fuyao 专有能力不进路由矩阵,由独立服务直连消费——按日 JSON 缓存(历史不可变)、交易日回退、四态降级 |
