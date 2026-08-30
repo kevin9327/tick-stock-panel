@@ -149,19 +149,17 @@
 flowchart TB
     subgraph DATA["数据源层 · 插件化"]
         direction LR
-        D1["TickFlow"] --- R(["能力路由<br/>多数据集 · 按能力独立路由"])
-        D2["fuyao"] --- R
-        D3["stock-sdk"] --- R
-        D4["自定义源"] --- R
-        D1 ~~~ D2 ~~~ D3 ~~~ D4
+        D1["TickFlow SDK"] ~~~ D2["fuyao"] ~~~ D3["stock-sdk"] ~~~ D4["YAML 自定义源"] ~~~ D5["+ 更多插件…"]
+    end
+
+    subgraph ROUTE["能力路由矩阵 · 每数据集独立选源"]
+        direction LR
+        DS1["日K"] ~~~ DS2["除权因子"] ~~~ DS3["实时行情"] ~~~ DS4["分钟K"] ~~~ DS5["五档盘口"] ~~~ DS6["财务"]
     end
 
     subgraph STORE["存储层"]
         direction LR
-        ST1[("Parquet 分区表")]
-        ST2[("DuckDB")]
-        ST3[("JSON 按日缓存")]
-        ST1 ~~~ ST2 ~~~ ST3
+        ST1[("Parquet 分区表")] ~~~ ST2[("DuckDB")] ~~~ ST3[("JSON 按日缓存")]
     end
 
     subgraph CALC["计算层 · Polars"]
@@ -184,7 +182,8 @@ flowchart TB
         F1["功能页面"] ~~~ F2["图表可视化"] ~~~ F3["实时推送"]
     end
 
-    DATA --- STORE
+    DATA --- ROUTE
+    ROUTE --- STORE
     STORE --- CALC
     CALC --- RES
     RES --- SVC
@@ -196,7 +195,8 @@ flowchart TB
     classDef calc fill:#f0f9ff,stroke:#0ea5e9,color:#0c4a6e
     classDef store fill:#ecfdf5,stroke:#10b981,color:#064e3b
     classDef data fill:#fdf2f8,stroke:#ec4899,color:#831843
-    classDef route fill:#fdf2f8,stroke:#db2777,color:#831843,stroke-width:2px
+    classDef pluginSlot fill:#fdf2f8,stroke:#ec4899,color:#831843,stroke-dasharray:5 4
+    classDef dataset fill:#f5f3ff,stroke:#a78bfa,color:#5b21b6
 
     class F1,F2,F3 fe
     class S1,S2,S3,S4 svc
@@ -204,13 +204,15 @@ flowchart TB
     class C1,C2 calc
     class ST1,ST2,ST3 store
     class D1,D2,D3,D4 data
-    class R route
+    class D5 pluginSlot
+    class DS1,DS2,DS3,DS4,DS5,DS6 dataset
 
     style FE fill:#f5f3ff,stroke:#c7d2fe,color:#3730a3
     style SVC fill:#ecfeff,stroke:#a5f3fc,color:#155e75
     style RES fill:#fff7ed,stroke:#fed7aa,color:#9a3412
     style CALC fill:#f0f9ff,stroke:#bae6fd,color:#075985
     style STORE fill:#ecfdf5,stroke:#a7f3d0,color:#065f46
+    style ROUTE fill:#faf5ff,stroke:#ddd6fe,color:#6b21a8
     style DATA fill:#fdf2f8,stroke:#fbcfe8,color:#9d174d
 ```
 
