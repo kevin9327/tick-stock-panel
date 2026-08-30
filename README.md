@@ -149,11 +149,12 @@
 flowchart TB
     subgraph DATA["数据源层 · 插件化"]
         direction LR
-        D1["TickFlow"] --- R(["能力路由<br/>多数据集 · 按能力独立路由"])
-        D2["fuyao"] --- R
-        D3["stock-sdk"] --- R
-        D4["自定义源"] --- R
-        D1 ~~~ D2 ~~~ D3 ~~~ D4
+        D1["TickFlow"] ~~~ D2["fuyao"] ~~~ D3["stock-sdk"] ~~~ D4["自定义源"]
+    end
+
+    subgraph ROUTE["能力路由层"]
+        direction LR
+        R(["多数据集 · 按能力独立路由 · 档位探测"])
     end
 
     subgraph STORE["存储层"]
@@ -184,7 +185,8 @@ flowchart TB
         F1["功能页面"] ~~~ F2["图表可视化"] ~~~ F3["实时推送"]
     end
 
-    DATA --- STORE
+    DATA --- ROUTE
+    ROUTE --- STORE
     STORE --- CALC
     CALC --- RES
     RES --- SVC
@@ -211,6 +213,7 @@ flowchart TB
     style RES fill:#fff7ed,stroke:#fed7aa,color:#9a3412
     style CALC fill:#f0f9ff,stroke:#bae6fd,color:#075985
     style STORE fill:#ecfdf5,stroke:#a7f3d0,color:#065f46
+    style ROUTE fill:#faf5ff,stroke:#e9d5ff,color:#6b21a8
     style DATA fill:#fdf2f8,stroke:#fbcfe8,color:#9d174d
 ```
 
