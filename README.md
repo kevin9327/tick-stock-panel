@@ -10,8 +10,6 @@
 **多数据源能力路由 · 分钟级策略执行 · 全时段异动监控 · AI 辅助研究**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Backend: Python ≥3.11 · FastAPI](https://img.shields.io/badge/Backend-Python%20%E2%89%A53.11%20%C2%B7%20FastAPI-blue.svg)](https://www.python.org/)
-[![Frontend: React 18 · Vite](https://img.shields.io/badge/Frontend-React%2018%20%C2%B7%20Vite-61dafb.svg)](https://react.dev/)
 [![Engine: Polars · DuckDB](https://img.shields.io/badge/Engine-Polars%20%C2%B7%20DuckDB-6f42c1.svg)](https://pola.rs/)
 [![Data: 多源插件化 · 能力路由](https://img.shields.io/badge/Data-%E5%A4%9A%E6%BA%90%E6%8F%92%E4%BB%B6%E5%8C%96%20%C2%B7%20%E8%83%BD%E5%8A%9B%E8%B7%AF%E7%94%B1-00b386.svg)](./docs/custom-data-source.md)
 [![Deploy: Docker](https://img.shields.io/badge/Deploy-Docker-2496ed.svg)](./Dockerfile)
