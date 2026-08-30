@@ -1,7 +1,7 @@
 
 <div align="center">
 
-# TSP--A股量化工作台
+# TSP--A股智能量化工作台
 
 [![声明:个人开源](https://img.shields.io/badge/⚠️_声明-个人开源_非_第三方_官方项目-green?style=for-the-badge&labelColor=red)](https://github.com/shy3130/tick-stock-panel)
 
